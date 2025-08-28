@@ -7,6 +7,7 @@ const router = Router()
 router.post('/', user.create)
 router.post('/login', auth.login, user.login)
 router.get('/profile', auth.token, user.profile)
+router.patch('/profile', auth.token, user.updateProfile) // 新增這行
 router.patch('/refresh', auth.token, user.refresh)
 router.delete('/logout', auth.token, user.logout)
 router.patch('/cart', auth.token, user.cart)

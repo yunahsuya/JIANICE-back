@@ -141,7 +141,7 @@ export const createUserByAdmin = async (req, res) => {
     if (req.user.role !== 'admin') {
       return res.status(StatusCodes.FORBIDDEN).json({
         success: false,
-        message: '權限不足'
+        message: '權限不足',
       })
     }
 
@@ -150,7 +150,7 @@ export const createUserByAdmin = async (req, res) => {
       account: req.body.account,
       email: req.body.email,
       password: req.body.password,
-      role: req.body.role || 'user'
+      role: req.body.role || 'user',
     })
 
     // 回傳使用者資料（不包含密碼和 tokens）
@@ -161,7 +161,7 @@ export const createUserByAdmin = async (req, res) => {
     res.status(StatusCodes.CREATED).json({
       success: true,
       message: '使用者建立成功',
-      result: userResponse
+      result: userResponse,
     })
   } catch (error) {
     console.log('controllers/user.js createUserByAdmin')
@@ -170,17 +170,17 @@ export const createUserByAdmin = async (req, res) => {
       const key = Object.keys(error.errors)[0]
       res.status(StatusCodes.BAD_REQUEST).json({
         success: false,
-        message: error.errors[key].message
+        message: error.errors[key].message,
       })
     } else if (error.name === 'MongoServerError' && error.code === 11000) {
       res.status(StatusCodes.CONFLICT).json({
         success: false,
-        message: '帳號或電子郵件已存在'
+        message: '帳號或電子郵件已存在',
       })
     } else {
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: '伺服器內部錯誤'
+        message: '伺服器內部錯誤',
       })
     }
   }
@@ -193,31 +193,29 @@ export const getAllUsers = async (req, res) => {
     if (req.user.role !== 'admin') {
       return res.status(StatusCodes.FORBIDDEN).json({
         success: false,
-        message: '權限不足'
+        message: '權限不足',
       })
     }
 
     // 取得所有使用者，但不包含密碼和 tokens
-    const users = await User.find({}, '-password -tokens')
-      .sort({ createdAt: -1 }) // 按建立時間排序
+    const users = await User.find({}, '-password -tokens').sort({ createdAt: -1 }) // 按建立時間排序
 
     res.status(StatusCodes.OK).json({
       success: true,
       message: '',
-      result: users
+      result: users,
     })
   } catch (error) {
     console.log('controllers/user.js getAllUsers')
     console.error(error)
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
-      message: '伺服器內部錯誤'
+      message: '伺服器內部錯誤',
     })
   }
 }
 
 // --------------------------------------------------------------------
-
 
 // 管理員功能：更新使用者資料
 export const updateUser = async (req, res) => {
@@ -226,7 +224,7 @@ export const updateUser = async (req, res) => {
     if (req.user.role !== 'admin') {
       return res.status(StatusCodes.FORBIDDEN).json({
         success: false,
-        message: '權限不足'
+        message: '權限不足',
       })
     }
 
@@ -234,7 +232,7 @@ export const updateUser = async (req, res) => {
     if (!validator.isMongoId(req.params.id)) {
       return res.status(StatusCodes.BAD_REQUEST).json({
         success: false,
-        message: '使用者 ID 格式錯誤'
+        message: '使用者 ID 格式錯誤',
       })
     }
 
@@ -244,7 +242,7 @@ export const updateUser = async (req, res) => {
       if (req.body.password.length < 4 || req.body.password.length > 20) {
         return res.status(StatusCodes.BAD_REQUEST).json({
           success: false,
-          message: '密碼長度必須在 4 到 20 個字元之間'
+          message: '密碼長度必須在 4 到 20 個字元之間',
         })
       }
       // 加密新密碼
@@ -252,20 +250,17 @@ export const updateUser = async (req, res) => {
     }
 
     // 更新使用者資料
-    const user = await User.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { 
-        new: true, // 回傳更新後的資料
-        runValidators: true // 執行 schema 驗證
-      }
-    ).select('-password -tokens')
+    const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true, // 回傳更新後的資料
+      runValidators: true, // 執行 schema 驗證
+    })
+      .select('-password -tokens')
       .orFail(new Error('USER NOT FOUND'))
 
     res.status(StatusCodes.OK).json({
       success: true,
       message: '使用者資料更新成功',
-      result: user
+      result: user,
     })
   } catch (error) {
     console.log('controllers/user.js updateUser')
@@ -274,28 +269,26 @@ export const updateUser = async (req, res) => {
       const key = Object.keys(error.errors)[0]
       res.status(StatusCodes.BAD_REQUEST).json({
         success: false,
-        message: error.errors[key].message
+        message: error.errors[key].message,
       })
     } else if (error.message === 'USER NOT FOUND') {
       res.status(StatusCodes.NOT_FOUND).json({
         success: false,
-        message: '使用者不存在'
+        message: '使用者不存在',
       })
     } else if (error.name === 'MongoServerError' && error.code === 11000) {
       res.status(StatusCodes.CONFLICT).json({
         success: false,
-        message: '帳號或電子郵件已存在'
+        message: '帳號或電子郵件已存在',
       })
     } else {
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: '伺服器內部錯誤'
+        message: '伺服器內部錯誤',
       })
     }
   }
 }
-
-
 
 // 管理員功能：刪除使用者
 export const deleteUser = async (req, res) => {
@@ -304,7 +297,7 @@ export const deleteUser = async (req, res) => {
     if (req.user.role !== 'admin') {
       return res.status(StatusCodes.FORBIDDEN).json({
         success: false,
-        message: '權限不足'
+        message: '權限不足',
       })
     }
 
@@ -312,7 +305,7 @@ export const deleteUser = async (req, res) => {
     if (!validator.isMongoId(req.params.id)) {
       return res.status(StatusCodes.BAD_REQUEST).json({
         success: false,
-        message: '使用者 ID 格式錯誤'
+        message: '使用者 ID 格式錯誤',
       })
     }
 
@@ -320,18 +313,17 @@ export const deleteUser = async (req, res) => {
     if (req.params.id === req.user._id.toString()) {
       return res.status(StatusCodes.BAD_REQUEST).json({
         success: false,
-        message: '不能刪除自己的帳號'
+        message: '不能刪除自己的帳號',
       })
     }
 
     // 刪除使用者
-    const user = await User.findByIdAndDelete(req.params.id)
-      .orFail(new Error('USER NOT FOUND'))
+    const user = await User.findByIdAndDelete(req.params.id).orFail(new Error('USER NOT FOUND'))
 
     res.status(StatusCodes.OK).json({
       success: true,
       message: '使用者刪除成功',
-      result: { _id: user._id, account: user.account }
+      result: { _id: user._id, account: user.account },
     })
   } catch (error) {
     console.log('controllers/user.js deleteUser')
@@ -339,12 +331,12 @@ export const deleteUser = async (req, res) => {
     if (error.message === 'USER NOT FOUND') {
       res.status(StatusCodes.NOT_FOUND).json({
         success: false,
-        message: '使用者不存在'
+        message: '使用者不存在',
       })
     } else {
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         success: false,
-        message: '伺服器內部錯誤'
+        message: '伺服器內部錯誤',
       })
     }
   }
@@ -363,8 +355,14 @@ export const profile = (req, res) => {
       // 這邊不用 try/catch 因為它不涉及資料庫查詢，只是回傳存在 req.user 的資料
       // 這裡 req.user 是先經過身份認證中間件，拿到的使用者物件
       account: req.user.account,
+      email: req.user.email,
       role: req.user.role,
       cartTotal: req.user.cartTotal,
+      height: req.user.height,
+      weight: req.user.weight,
+      disease: req.user.disease || [],
+      state: req.user.state || [],
+      favoriteRestaurants: req.user.favoriteRestaurants || [],
     },
   })
 }
@@ -395,6 +393,48 @@ export const refresh = async (req, res) => {
       success: false,
       message: '伺服器內部錯誤',
     })
+  }
+}
+
+// 更新個人資料
+export const updateProfile = async (req, res) => {
+  try {
+    // 只允許更新特定欄位
+    const allowedFields = ['height', 'weight', 'disease', 'state']
+    const updateData = {}
+
+    allowedFields.forEach((field) => {
+      if (req.body[field] !== undefined) {
+        updateData[field] = req.body[field]
+      }
+    })
+
+    // 更新使用者資料
+    const user = await User.findByIdAndUpdate(req.user._id, updateData, {
+      new: true, // 回傳更新後的資料
+      runValidators: true, // 執行 schema 驗證
+    }).select('-password -tokens')
+
+    res.status(StatusCodes.OK).json({
+      success: true,
+      message: '個人資料更新成功',
+      result: user,
+    })
+  } catch (error) {
+    console.log('controllers/user.js updateProfile')
+    console.error(error)
+    if (error.name === 'ValidationError') {
+      const key = Object.keys(error.errors)[0]
+      res.status(StatusCodes.BAD_REQUEST).json({
+        success: false,
+        message: error.errors[key].message,
+      })
+    } else {
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        message: '伺服器內部錯誤',
+      })
+    }
   }
 }
 
