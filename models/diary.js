@@ -5,6 +5,7 @@ const schema = new Schema(
     user: {
       type: Schema.Types.ObjectId,
       ref: 'users',
+      required: [true, '用戶是必填的'], // 新增這行
     },
 
     // 日期

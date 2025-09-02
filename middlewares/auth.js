@@ -74,11 +74,23 @@ export const token = (req, res, next) => {
 }
 
 export const admin = (req, res, next) => {
-  // 檢查使用者是否為管理員
-  if (req.user.role !== 'admin') {
+  // 檢查使用者是否為管理員或系統管理員
+  if (req.user.role !== 'admin' && req.user.role !== 'root') {
     return res.status(StatusCodes.FORBIDDEN).json({
       success: false,
       message: '沒有權限存取此資源',
+    })
+  }
+  next()
+}
+
+// 新增：系統管理員專用中間件
+export const root = (req, res, next) => {
+  // 檢查使用者是否為系統管理員
+  if (req.user.role !== 'root') {
+    return res.status(StatusCodes.FORBIDDEN).json({
+      success: false,
+      message: '需要系統管理員權限',
     })
   }
   next()

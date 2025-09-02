@@ -19,6 +19,7 @@ import validator from 'validator'
 // 加密密碼的工具
 import bcrypt from 'bcrypt'
 
+// 購物車的 schema
 const cartSchema = new Schema(
   {
     product: {
@@ -45,6 +46,52 @@ const cartSchema = new Schema(
   },
   { versionKey: false },
 )
+
+
+// 新增：日記 Schema
+const diarySchema = new Schema(
+  {
+    // 日期
+    date: {
+      type: Date,
+      required: false,
+    },
+    // 標題
+    title: {
+      type: String,
+      required: [true, '標題是必填的'],
+    },
+    // 描述
+    description: {
+      type: String,
+      required: [true, '每日三件好事是必填的'],
+    },
+    // 圖片
+    image: {
+      type: [String],
+      required: [true, '圖片是必填的'],
+      
+    },
+    // 上架
+    sell: {
+      type: Boolean,
+      default: true,
+    },
+    // 分類
+    category: {
+      type: String,
+      required: [true, '分類是必填的'],
+    },
+  },
+  { 
+    versionKey: false,
+    timestamps: true, // 這會自動添加 createdAt 和 updatedAt
+  },
+)
+
+
+
+
 
 const schema = new Schema(
   {
@@ -91,7 +138,7 @@ const schema = new Schema(
     // 角色
     role: {
       type: String,
-      enum: ['user', 'admin'],
+      enum: ['user', 'admin','root'],
       default: 'user',
     },
 
@@ -125,6 +172,18 @@ const schema = new Schema(
     favoriteRestaurants: {
       type: [String],
       // type: [restaurantSchema],
+    },
+
+     // 新增：自定義日記分類
+     customCategories: {
+      type: [String],
+      default: [],
+    },
+
+     // 新增：日記欄位，使用跟 cart 一樣的寫法
+     diary: {
+      type: [diarySchema],
+      default: [],
     },
   },
   {
