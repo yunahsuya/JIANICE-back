@@ -47,7 +47,6 @@ const cartSchema = new Schema(
   { versionKey: false },
 )
 
-
 // 新增：日記 Schema
 const diarySchema = new Schema(
   {
@@ -70,7 +69,6 @@ const diarySchema = new Schema(
     image: {
       type: [String],
       required: [true, '圖片是必填的'],
-      
     },
     // 上架
     sell: {
@@ -83,15 +81,11 @@ const diarySchema = new Schema(
       required: [true, '分類是必填的'],
     },
   },
-  { 
+  {
     versionKey: false,
     timestamps: true, // 這會自動添加 createdAt 和 updatedAt
   },
 )
-
-
-
-
 
 const schema = new Schema(
   {
@@ -138,7 +132,7 @@ const schema = new Schema(
     // 角色
     role: {
       type: String,
-      enum: ['user', 'admin','root'],
+      enum: ['user', 'admin', 'root'],
       default: 'user',
     },
 
@@ -174,16 +168,27 @@ const schema = new Schema(
       // type: [restaurantSchema],
     },
 
-     // 新增：自定義日記分類
-     customCategories: {
+    // 新增：自定義日記分類
+    customCategories: {
       type: [String],
       default: [],
     },
 
-     // 新增：日記欄位，使用跟 cart 一樣的寫法
-     diary: {
+    // 新增：日記欄位，使用跟 cart 一樣的寫法
+    diary: {
       type: [diarySchema],
       default: [],
+    },
+
+    // 新增：回報計數相關欄位 (2025/09/15 新增)
+    reportCount: {
+      type: Number,
+      default: 0,
+    },
+
+    lastReportDate: {
+      type: Date,
+      default: null,
     },
   },
   {

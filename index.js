@@ -34,6 +34,9 @@ import restaurantRouter from './routes/restaurant.js'
 // import hpaNewsRouter from './routes/hpanews11.js'
 import hpaNewsRouter from './routes/hpanews.js'
 
+// 關於 JIANICE - 回報訊息 (2025/09/14 新增)
+import reportRouter from './routes/report.js'
+
 // 幫你處理「使用者要登入」時的驗證流程，本身不負責怎麼驗證，而是提供一個框架，讓你用各種策略（Strategy）去實作
 import './passport.js'
 
@@ -128,6 +131,9 @@ app.use('/restaurant', restaurantRouter)
 
 // 國民健康署新聞
 app.use('/hpanews', hpaNewsRouter)
+
+// 關於 JIANICE - 回報訊息 (2025/09/14 新增)
+app.use('/report', reportRouter)
 
 // 處理未定義的路由
 // 這行是「萬用路由」，會攔截所有前面沒定義的路由，回 404，提醒前端這條路徑不存在
