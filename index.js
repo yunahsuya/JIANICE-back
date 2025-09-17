@@ -166,3 +166,6 @@ app.listen(4000, () => {
 
   最後開門迎客（啟動伺服器）
 */
+
+// 在 back/index.js 的開頭加入
+process.env.TZ = 'Asia/Taipei'
